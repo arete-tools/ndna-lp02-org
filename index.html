@@ -1,0 +1,1747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="pageTitle">Negotiation DNA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --brand: #264550;
+  --brand-dark: #1a3640;
+  --brand-faint: #F8F7F4;
+  --tint: #d1d3d4;
+  --white: #ffffff;
+  --text-primary: #1a1a1a;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
+  --text-body: #1a1a1a;
+  --text-heading: #000000;
+  --text-muted: #9ca3af;
+  --bar-track: #e8e5e0;
+  --band-low: #c87533;
+  --band-moderate: #2a7d4f;
+  --band-high: #2663a6;
+  --font-display: 'Lato', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'EB Garamond', Georgia, serif;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 2px 6px rgba(0,0,0,0.08);
+  --shadow-lg: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+html { font-size: 16px; }
+body {
+  background: var(--brand-faint);
+  font-family: var(--font-display);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utility */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* Wrap */
+.wrap {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* Topbar */
+.topbar {
+  background: var(--white);
+  border-bottom: 3px solid var(--brand);
+  padding: 14px 24px;
+  margin: 0 -24px;
+}
+.topbar-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.875rem;
+  color: var(--brand);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* Progress counter */
+.progress-bar {
+  display: none;
+  background: var(--white);
+  border-bottom: 1px solid var(--tint);
+  margin: 0 -24px;
+  padding: 20px 24px;
+}
+.progress-bar.visible { display: block; }
+.progress-inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.progress-number {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 3rem;
+  color: var(--brand);
+  min-width: 96px;
+  text-align: center;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.progress-number .total {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+.progress-right { flex: 1; }
+.progress-dim-label {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.75rem;
+  color: var(--brand);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+.pips {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.pip {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e8e5e0;
+  flex-shrink: 0;
+}
+.pip.done { background: var(--brand); }
+.pip.active {
+  background: var(--brand);
+  box-shadow: 0 0 0 3px rgba(38,69,80,0.25);
+}
+.pip.dim-gap { margin-left: 8px; }
+
+/* Sections */
+.section { display: none; }
+.section.active { display: flex; flex-direction: column; }
+
+/* No-token error */
+#no-token {
+  min-height: calc(100vh - 120px);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 24px;
+}
+.no-token-message {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.0625rem;
+  color: var(--text-primary);
+  line-height: 1.7;
+  max-width: 440px;
+}
+
+/* Intro */
+#intro {
+  min-height: calc(100vh - 120px);
+}
+.intro-headline {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 2rem;
+  color: #000;
+  line-height: 1.25;
+  margin-bottom: 32px;
+  margin-top: 48px;
+}
+.intro-body {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  color: #1a1a1a;
+  line-height: 1.7;
+  margin-bottom: 48px;
+}
+.intro-meta {
+  background: var(--white);
+  border-left: 3px solid var(--brand);
+  padding: 32px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: #1a1a1a;
+  line-height: 1.8;
+  margin-bottom: 48px;
+  border-radius: 3px;
+}
+.intro-meta p + p { margin-top: 12px; }
+
+/* Response scale preview */
+.scale-preview {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+.scale-preview-label {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+.scale-chip {
+  flex: 1;
+  background: var(--white);
+  border: 1px solid var(--tint);
+  border-radius: 5px;
+  padding: 12px 8px;
+  text-align: center;
+}
+.scale-chip-num {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.375rem;
+  color: var(--brand);
+  display: block;
+  margin-bottom: 4px;
+}
+.scale-chip-label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+
+/* Instructions block (org profile) */
+.instructions-block {
+  background: var(--white);
+  border-left: 3px solid var(--brand);
+  padding: 32px;
+  border-radius: 3px;
+  margin-bottom: 48px;
+  margin-top: 32px;
+}
+.instructions-section { margin-bottom: 24px; }
+.instructions-section:last-child { margin-bottom: 0; }
+.instructions-label {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.75rem;
+  color: var(--brand);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+.instructions-text {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+  line-height: 1.7;
+}
+.instructions-list {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+  line-height: 1.7;
+  padding-left: 20px;
+}
+.instructions-list li { margin-bottom: 6px; }
+.instructions-list li:last-child { margin-bottom: 0; }
+
+.btn-start {
+  display: block;
+  width: 100%;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  background: var(--brand);
+  color: var(--white);
+  border: none;
+  padding: 18px 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: auto;
+  margin-bottom: 32px;
+  transition: background 0.2s;
+}
+.btn-start:hover { background: var(--brand-dark); }
+.btn-start:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+/* Questions */
+#questions {
+  min-height: calc(100vh - 120px);
+  padding: 48px 0 32px;
+}
+.q-wrap {}
+.q-text {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.375rem;
+  color: #000;
+  line-height: 1.65;
+  margin-bottom: 48px;
+  letter-spacing: -0.01em;
+}
+.q-options {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.q-options[role="radiogroup"] { outline: none; }
+.q-btn {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 24px;
+  background: var(--white);
+  border: 2px solid var(--tint);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.q-btn:hover { border-color: rgba(38,69,80,0.4); }
+.q-btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.q-btn.selected {
+  background: var(--brand);
+  border-color: var(--brand);
+  box-shadow: var(--shadow-md);
+}
+.q-btn-num {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.25rem;
+  color: var(--brand);
+  width: 32px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.q-btn.selected .q-btn-num { color: var(--white); }
+.q-btn-label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+.q-btn.selected .q-btn-label { color: var(--white); }
+
+.q-nav {
+  margin-top: auto;
+  padding-top: 24px;
+}
+.btn-back {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 0;
+}
+.btn-back:hover { color: var(--text-primary); }
+.btn-back:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.btn-back.hidden { visibility: hidden; }
+
+/* Fade animation */
+.fade-in {
+  animation: fadeIn 0.2s ease forwards;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Loading */
+#loading {
+  align-items: center;
+  justify-content: center;
+  padding: 128px 0;
+}
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--tint);
+  border-top-color: var(--brand);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-bottom: 20px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+}
+
+/* Results */
+#results { padding-bottom: 32px; }
+
+.results-card {
+  background: var(--white);
+  border-radius: 3px;
+  box-shadow: var(--shadow-lg);
+  margin-top: 32px;
+}
+.results-header {
+  padding: 36px 32px 28px;
+  border-bottom: 1px solid var(--tint);
+}
+.results-tool-label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+.results-headline {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--text-heading);
+  line-height: 1.5;
+}
+
+/* Bar chart */
+.chart-section { padding: 28px 32px 32px; }
+.chart-row { margin-bottom: 24px; }
+.chart-row:last-child { margin-bottom: 0; }
+.chart-dim-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.chart-bar-container {
+  height: 32px;
+  position: relative;
+}
+.chart-track {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0; right: 0;
+  height: 16px;
+  background: var(--bar-track);
+  border-radius: 3px;
+}
+.chart-moderate-zone {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 33.33%;
+  right: 33.33%;
+  background: rgba(38,69,80,0.1);
+  border-radius: 3px;
+}
+.chart-center-line {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: var(--tint);
+  z-index: 2;
+}
+.chart-fill {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 16px;
+  background: var(--brand);
+  border-radius: 3px;
+  z-index: 1;
+  transition: left 0.6s ease, width 0.6s ease, opacity 0.6s ease;
+}
+.chart-marker {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  background: var(--brand);
+  border: 2px solid var(--white);
+  border-radius: 50%;
+  z-index: 3;
+  box-shadow: var(--shadow-sm);
+  transition: left 0.6s ease;
+}
+.chart-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+.chart-label {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 0.875rem;
+  color: var(--text-body);
+  max-width: 45%;
+}
+.chart-label-right { text-align: right; }
+
+/* Balanced profile block (H12 only) */
+.balanced-block {
+  display: none;
+  padding: 20px 32px 24px;
+  border-top: 1px solid var(--tint);
+}
+.balanced-block.visible { display: block; }
+.balanced-copy {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 1.0625rem;
+  color: var(--text-body);
+  line-height: 1.7;
+}
+
+/* Dimension summaries */
+.summaries-section { display: none; }
+.summaries-section.visible { display: block; }
+
+.summary-card {
+  border-top: 1px solid var(--tint);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.summary-card.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+.summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 32px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.summary-header:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+.summary-header-left {}
+.summary-dim-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  color: #000;
+  margin-bottom: 2px;
+}
+.summary-band-label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.summary-band-label.band-low { color: var(--band-low); }
+.summary-band-label.band-moderate { color: var(--band-moderate); }
+.summary-band-label.band-high { color: var(--band-high); }
+.summary-chevron {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  color: var(--text-secondary);
+}
+.summary-card.expanded .summary-chevron { transform: rotate(180deg); }
+.summary-body {
+  display: none;
+  padding: 0 32px 20px;
+}
+.summary-card.expanded .summary-body { display: block; }
+.summary-copy {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 1.0625rem;
+  color: var(--text-body);
+  line-height: 1.7;
+}
+
+/* Retake */
+.retake-wrap { display: none; margin-top: 16px; text-align: left; }
+.btn-retake {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+}
+.btn-retake:hover { color: var(--text-secondary); }
+.btn-retake:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+/* Save */
+.save-wrap { margin-top: 16px; text-align: left; }
+.btn-save {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.15s ease;
+}
+.btn-save:hover { color: var(--text-primary); }
+.btn-save:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.save-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 32px 0;
+  border-top: 1px solid var(--tint);
+  margin-top: 16px;
+}
+.footer-copy {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 0.6875rem;
+  color: var(--text-tertiary);
+}
+
+/* ---- Mobile ---- */
+@media (max-width: 480px) {
+  .wrap { padding: 0 16px; }
+  .topbar {
+    margin: 0 -16px;
+    padding: 12px 16px;
+    font-size: 0.75rem;
+  }
+  .topbar-title { font-size: 0.75rem; }
+  .progress-bar {
+    margin: 0 -16px;
+    padding: 16px;
+  }
+  .progress-inner { gap: 16px; }
+  .progress-number {
+    font-size: 2.25rem;
+    min-width: 76px;
+  }
+  .progress-number .total { font-size: 1rem; }
+  .pip { width: 6px; height: 6px; }
+  .pip.dim-gap { margin-left: 5px; }
+  .intro-headline { font-size: 1.5rem; margin-top: 32px; }
+  .intro-body { font-size: 1rem; }
+  .intro-meta { padding: 24px; margin-bottom: 32px; }
+  .instructions-block { padding: 24px; margin-top: 24px; margin-bottom: 32px; }
+  .instructions-text { font-size: 0.875rem; }
+  .instructions-list { font-size: 0.875rem; }
+  .scale-chip { padding: 10px 4px; }
+  .scale-chip-num { font-size: 1.1rem; }
+  .scale-chip-label { font-size: 0.625rem; }
+  #questions { padding: 32px 0 24px; min-height: 520px; }
+  .q-text { font-size: 1.125rem; margin-bottom: 32px; }
+  .q-options { gap: 12px; }
+  .q-btn { padding: 14px 16px; gap: 12px; }
+  .q-btn-num { font-size: 1.1rem; width: 28px; }
+  .q-btn-label { font-size: 0.9375rem; }
+  .results-header { padding: 28px 20px 24px; }
+  .chart-section { padding: 24px 20px 28px; }
+  .balanced-block { padding: 16px 20px 20px; }
+  .summary-header { padding: 16px 20px; }
+  .summary-body { padding: 0 20px 20px; }
+  .btn-save { font-size: 0.8125rem; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.print-only-footer { display: none; }
+
+/* Print */
+@media print {
+  /* Hide non-content elements */
+  .topbar, .progress-bar, .q-nav, .retake-wrap, .save-wrap, .footer { display: none !important; }
+
+  /* Force results visible */
+  #results { display: block !important; }
+
+  /* White background */
+  body { background: #ffffff !important; }
+  .wrap { padding: 0 24px !important; max-width: 100% !important; }
+
+  /* Clean card */
+  .results-card { box-shadow: none !important; border: none !important; margin-top: 0 !important; }
+
+  /* Header */
+  .results-header { padding: 20px 24px 16px !important; border-bottom: 2px solid #264550 !important; }
+  .results-tool-label { font-size: 0.7rem !important; }
+  .results-headline { font-size: 1.25rem !important; color: #000 !important; }
+
+  /* Chart */
+  .chart-section { padding: 20px 24px 24px !important; }
+  .chart-row { margin-bottom: 20px !important; }
+  .chart-dim-name { font-size: 0.8rem !important; }
+  .chart-label { font-size: 0.75rem !important; }
+  .chart-fill { transition: none !important; }
+  .chart-marker { transition: none !important; }
+
+  /* Balanced block */
+  .balanced-block { padding: 12px 24px 16px !important; }
+  .balanced-block.visible { display: block !important; }
+  .balanced-copy { font-size: 0.9375rem !important; }
+
+  /* Force all summaries open */
+  .summaries-section { display: block !important; }
+  .summary-card { opacity: 1 !important; transform: none !important; border-top: 1px solid #e0e0e0 !important; }
+  .summary-body { display: block !important; }
+  .summary-header { padding: 12px 24px !important; cursor: default !important; }
+  .summary-dim-name { font-size: 0.9375rem !important; }
+  .summary-band-label { font-size: 0.6875rem !important; }
+  .summary-copy { font-size: 0.9375rem !important; line-height: 1.6 !important; }
+  .summary-chevron { display: none !important; }
+
+  /* Print footer: visible only when printing */
+  .print-only-footer {
+    display: block !important;
+    margin-top: 24px;
+    padding-top: 12px;
+    border-top: 1px solid #264550;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.6875rem;
+    color: #9ca3af;
+  }
+
+  /* Page settings */
+  @page {
+    margin: 18mm 15mm;
+    size: A4 portrait;
+  }
+
+  /* Prevent awkward page breaks */
+  .chart-section { page-break-inside: avoid; }
+  .summary-card { page-break-inside: avoid; }
+  .results-header { page-break-after: avoid; }
+}
+
+/* Language toggle */
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  user-select: none;
+}
+.lang-btn {
+  background: none;
+  border: none;
+  padding: 4px 6px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: 3px;
+}
+.lang-btn:hover { color: var(--text-primary); }
+.lang-btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.lang-btn.lang-active { color: var(--brand); font-weight: 900; }
+.lang-sep { color: var(--text-tertiary); }
+
+/* Print: hide language toggle */
+@media print {
+  .lang-toggle { display: none !important; }
+}
+
+/* Mobile tweaks */
+@media (max-width: 480px) {
+  .topbar { gap: 8px; }
+  .lang-toggle { font-size: 0.75rem; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-title" data-i18n="topbar">Negotiation DNA</div>
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button type="button" class="lang-btn lang-active" id="langEn" aria-pressed="true">EN</button>
+      <span class="lang-sep" aria-hidden="true">|</span>
+      <button type="button" class="lang-btn" id="langTc" aria-pressed="false">中文</button>
+    </div>
+  </div>
+
+  <!-- Progress counter -->
+  <div class="progress-bar" id="progressBar">
+    <div class="progress-inner">
+      <div class="progress-number" id="progressNum">1 <span class="total">/35</span></div>
+      <div class="progress-right">
+        <div class="progress-dim-label" id="progressDimLabel">Preparation Orientation</div>
+        <div class="pips" id="pipsContainer"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- No token error -->
+  <div class="section" id="no-token">
+    <p class="no-token-message" data-i18n="noToken"></p>
+  </div>
+
+  <!-- Intro -->
+  <div class="section" id="intro">
+    <h1 class="intro-headline" data-i18n="introHeadline"></h1>
+
+    <div class="instructions-block">
+      <div class="instructions-section">
+        <div class="instructions-label" data-i18n="instrLabelAbout"></div>
+        <p class="instructions-text" data-i18n="instrAbout"></p>
+      </div>
+
+      <div class="instructions-section">
+        <div class="instructions-label" data-i18n="instrLabelWhatToAnswer"></div>
+        <p class="instructions-text" data-i18n="instrWhatCounts"></p>
+      </div>
+
+      <div class="instructions-section">
+        <div class="instructions-label" data-i18n="instrLabelHowToAnswer"></div>
+        <ul class="instructions-list">
+          <li data-i18n="instrHowAnswer1"></li>
+          <li data-i18n="instrHowAnswer2"></li>
+          <li data-i18n="instrHowAnswer3"></li>
+        </ul>
+      </div>
+
+      <div class="instructions-section">
+        <div class="instructions-label" data-i18n="instrLabelConfidentiality"></div>
+        <p class="instructions-text" data-i18n="instrConfidentiality"></p>
+      </div>
+
+      <div class="instructions-section">
+        <div class="instructions-label" data-i18n="instrLabelTime"></div>
+        <p class="instructions-text" data-i18n="instrTime"></p>
+      </div>
+    </div>
+
+    <div>
+      <div class="scale-preview-label" data-i18n="scaleHeader"></div>
+      <div class="scale-preview">
+        <div class="scale-chip"><span class="scale-chip-num">1</span><span class="scale-chip-label" data-i18n="scale1"></span></div>
+        <div class="scale-chip"><span class="scale-chip-num">2</span><span class="scale-chip-label" data-i18n="scale2"></span></div>
+        <div class="scale-chip"><span class="scale-chip-num">3</span><span class="scale-chip-label" data-i18n="scale3"></span></div>
+        <div class="scale-chip"><span class="scale-chip-num">4</span><span class="scale-chip-label" data-i18n="scale4"></span></div>
+      </div>
+    </div>
+
+    <button class="btn-start" id="btnStart" data-i18n="beginBtn"></button>
+  </div>
+
+  <!-- Questions -->
+  <div class="section" id="questions">
+    <div class="q-wrap" id="qWrap">
+      <div class="q-text" id="qText"></div>
+      <div class="q-options" id="qOptions" role="radiogroup" aria-label="Select your response"></div>
+    </div>
+    <div class="q-nav">
+      <button class="btn-back hidden" id="btnBack" aria-label="Previous question">&larr; <span data-i18n="backBtn"></span></button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="section" id="loading">
+    <div class="spinner" role="status"><span class="sr-only" data-i18n="loading"></span></div>
+    <div class="loading-text" data-i18n="loading"></div>
+  </div>
+
+  <!-- Results -->
+  <div class="section" id="results">
+    <div class="results-card">
+      <div class="results-header">
+        <div class="results-tool-label" id="resultsToolLabel"></div>
+        <div class="results-headline" id="resultsHeadline"></div>
+      </div>
+
+      <div class="chart-section" id="chartSection"></div>
+
+      <div class="balanced-block" id="balancedBlock">
+        <p class="balanced-copy" data-i18n="balancedBlock"></p>
+      </div>
+
+      <div class="summaries-section" id="summariesSection"></div>
+    </div>
+
+    <div class="retake-wrap">
+      <button class="btn-retake" id="btnRetake" data-i18n="retakeBtn"></button>
+    </div>
+
+    <div class="save-wrap">
+      <button class="btn-save" id="btnSave">
+        <svg class="save-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        <span data-i18n="saveBtn"></span>
+      </button>
+    </div>
+
+    <div class="footer">
+      <div class="footer-copy">&copy; 2026 Arete Advisors. <span data-i18n="footerDisclaimer"></span></div>
+    </div>
+
+    <div class="print-only-footer" aria-hidden="true">&copy; 2026 Arete Advisors. <span data-i18n="footerDisclaimer"></span></div>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  var WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzTW1Z0_mCDyluLIyu2GdyYasKYL7D3eBAHjz7TUiC_a2mwd0k45q7ilLLXsQvFPFbG/exec';
+
+  var token = new URLSearchParams(window.location.search).get('t');
+
+  // TOOL_NAME is computed via STRINGS.topbar so it follows the toggle.
+  function getToolName() { return S('topbar'); }
+
+  // ---- STRINGS (bilingual) ----
+
+  var lang = 'en';
+
+  var STRINGS = {
+    pageTitle: { en: "Negotiation DNA - Organizational Profile", tc: "Negotiation DNA — 公司檔案" },
+    topbar: { en: "Negotiation DNA - Organizational Profile", tc: "Negotiation DNA — 公司檔案" },
+    noToken: { en: "This assessment requires a valid link. If you received one, check that the full URL was copied. Otherwise, contact your administrator at connect@areteadvisors.pro.", tc: "此評估需要有效的連結。如您已收到連結，請確認已完整複製整個網址。如未收到，請聯絡您的管理員，connect@areteadvisors.pro。" },
+    loading: { en: "Building your organization's profile", tc: "正在建立貴公司的檔案" },
+    saveBtn: { en: "Save your profile", tc: "儲存您的檔案" },
+    retakeBtn: { en: "Retake assessment", tc: "重新評估" },
+    beginBtn: { en: "Begin Assessment", tc: "開始評估" },
+    backBtn: { en: "Previous", tc: "上一題" },
+    footerDisclaimer: { en: "Assessment reflects self-reported perceptions.", tc: "評估結果反映受訪者所匯報的觀感。" },
+    instrLabelAbout: { en: "About this diagnostic", tc: "關於本評估" },
+    instrLabelWhatToAnswer: { en: "What to answer about", tc: "作答須知" },
+    instrLabelHowToAnswer: { en: "How to answer", tc: "如何作答" },
+    instrLabelConfidentiality: { en: "Confidentiality", tc: "保密" },
+    instrLabelTime: { en: "Time", tc: "所需時間" },
+    ariaLanguage: { en: "Language", tc: "語言" },
+    ariaSelectResponse: { en: "Select your response", tc: "選擇您的答案" },
+    ariaPrevious: { en: "Previous question", tc: "上一題" },
+    introHeadline: { en: "How does your organization negotiate?", tc: "貴公司如何進行談判？" },
+    instrAbout: { en: "This instrument measures how your organization approaches commercial discussions: the systems, norms, processes, and environment that shape how negotiations happen. This is about the organization, not about you personally.", tc: "本工具評估貴公司如何進行商務磋商：塑造談判方式的制度、規範、流程和環境。這是對公司的評估，而非對您個人的評估。" },
+    instrWhatCounts: { en: "Answer based on what you observe happening in the commercial organization in your market. Not just your immediate team, and not what the organization says it does, but what actually happens in practice.", tc: "請根據您在所屬市場的商務組織中觀察到的日常實際運作作答。不僅限於您直屬團隊的情況，而是整個組織的實際運作。" },
+    instrHowAnswer1: { en: "Answer based on what you observe, not what you think should happen.", tc: "請根據您觀察到的情況作答，而非您認為應該怎麼樣發生。" },
+    instrHowAnswer2: { en: "Think about the general pattern across the organization, not one specific team or deal.", tc: "請考慮整個組織的整體模式，而非某一特定團隊或交易。" },
+    instrHowAnswer3: { en: "If you have not directly observed the situation described, answer based on your best understanding of what typically happens.", tc: "如您未曾直接觀察到所述情境，請根據您對一般情況的最佳理解作答。" },
+    instrConfidentiality: { en: "Your individual responses are confidential. Results will only be presented at a group level.", tc: "您的個人回覆將予保密。結果僅以群組層面呈報。" },
+    instrTime: { en: "Under 10 minutes.", tc: "少於10分鐘。" },
+    scale1: { en: "Never", tc: "從不" },
+    scale2: { en: "Rarely", tc: "甚少" },
+    scale3: { en: "Often", tc: "經常" },
+    scale4: { en: "Consistently", tc: "一貫做法" },
+    scaleHeader: { en: "Response Scale", tc: "回應量表" },
+    d1Name: { en: "Preparation Orientation", tc: "準備取向" },
+    d1Left: { en: "Intuitive / Adaptive", tc: "直覺型 / 適應型" },
+    d1Right: { en: "Systematic / Structured", tc: "系統型 / 結構型" },
+    d2Name: { en: "Value Orientation", tc: "價值取向" },
+    d2Left: { en: "Claims Value", tc: "爭取價值" },
+    d2Right: { en: "Creates Value", tc: "創造價值" },
+    d3Name: { en: "Pressure Response", tc: "受壓回應" },
+    d3Left: { en: "Accommodates Under Pressure", tc: "面對壓力時迎合對方" },
+    d3Right: { en: "Resists Under Pressure", tc: "受壓時抗衡" },
+    d4Name: { en: "Concession Discipline", tc: "讓步紀律" },
+    d4Left: { en: "Gives Ground Freely", tc: "樂意讓步" },
+    d4Right: { en: "Holds Ground Firmly", tc: "堅持立場" },
+    d5Name: { en: "Stakeholder Calibration", tc: "持份者協調" },
+    d5Left: { en: "Closes First, Aligns After", tc: "先達成，後協調" },
+    d5Right: { en: "Aligns First, Closes After", tc: "先協調，後達成" },
+    bandLow: { en: "LOW", tc: "低" },
+    bandModerate: { en: "MODERATE", tc: "中" },
+    bandHigh: { en: "HIGH", tc: "高" },
+    item_1_1: { en: "There is a standard preparation process that teams are expected to complete before significant commercial discussions.", tc: "團隊在進行重要商務磋商之前，須完成一套標準的準備流程。" },
+    item_2_1: { en: "Deal reviews focus on what value was created for both sides, not just what was captured for ours.", tc: "交易檢討着重於為雙方創造了什麼價值，而非僅關注我方所獲取的。" },
+    item_3_1: { en: "When a team holds firm against counterparty pressure, leadership publicly supports that decision.", tc: "當團隊於對手施壓力下堅守立場時，管理層會公開支持該決定。" },
+    item_4_1: { en: "Concession boundaries are defined before discussions begin, with clear limits on what teams can give without approval.", tc: "在進行磋商之前已訂定讓步界限，明確規定團隊在無須批准的情況下可以讓出的範圍。" },
+    item_5_1: { en: "There is a defined sign-off process that requires internal alignment before teams can commit terms to the other party.", tc: "設有明確的審批流程，要求團隊在向對方承諾條款之前與內部達成共識" },
+    item_1_5: { en: "Teams rely on the experience and judgment of senior people rather than following a structured preparation process.", tc: "團隊依靠資深人員的經驗和判斷，而非遵循結構化的準備流程。" },
+    item_2_5: { en: "Commercial success is measured primarily by what the organization captures from the deal, not what both parties gain.", tc: "商務成功主要以公司從交易中獲取的利益衡量，而非雙方的共同獲益。" },
+    item_3_5: { en: "When a deal is at risk of falling through, senior leadership steps in and makes concessions to close it.", tc: "當交易面臨告吹的風險時，高層管理人員會介入並作出讓步以促成交易。" },
+    item_4_5: { en: "Each deal is treated as its own event, with no systematic tracking of concessions made in previous discussions.", tc: "每宗交易被視為獨立個案，沒有系統性的記錄過往討論中所作的讓步。" },
+    item_5_5: { en: "Commercial teams operate with significant autonomy and bring internal groups in only when the deal is near completion.", tc: "商務團隊享有很大的自主權，僅在交易接近完成時才引入內部部門。" },
+    item_1_2: { en: "Commercial teams conduct formal briefings where strategy, priorities, and fallback positions are reviewed before engaging the other party.", tc: "商務團隊在與對方接洽前進行正式簡報會議，審視策略、優先事項和退守方案。" },
+    item_2_2: { en: "Teams are encouraged to propose creative deal structures even if they add complexity to the approval process.", tc: "團隊被鼓勵提出有創意的交易結構，即使這會增加審批流程的複雜性。" },
+    item_3_2: { en: "There are escalation protocols that prevent pressure from the other party from bypassing the team's authority.", tc: "設有上報機制，防止對方透過施加壓力以繞過團隊的權限 。" },
+    item_4_2: { en: "There is an organizational expectation that every concession is tied to a specific return from the other party.", tc: "公司的期望是每一項讓步都須與對方的具體互惠掛鈎。" },
+    item_5_2: { en: "Legal, finance, and operations are involved before the commercial team makes commitments to the other party.", tc: "在商務團隊向對方作出承諾之前，法務、財務和營運部門已參與其中。" },
+    item_1_6: { en: "Preparation for commercial discussions is left to individual judgment, with no required format or deliverables.", tc: "商務磋商的準備工作由個人判斷決定，沒有規定的格式或交付要求。" },
+    item_2_6: { en: "Teams are rewarded for closing at the best possible price rather than for finding terms that expand total value.", tc: "團隊因以最佳價格達成交易而獲獎勵，而非因找到擴大整體價值的條款。" },
+    item_3_6: { en: "When a competitor enters the picture, the default response is to improve our offer rather than hold position.", tc: "當競爭對手介入時，慣常的回應是改善我方的報價，而非堅守立場。" },
+    item_4_6: { en: "Individual team members can agree to concessions during discussions without needing approval from anyone else.", tc: "個別團隊成員可在討論中同意讓步，無須獲得其他人的批准。" },
+    item_5_6: { en: "It is common for people to commit terms that later need to be revised because of internal constraints no one surfaced earlier.", tc: "人員承諾了的條款，基於公司沒有事先提出相關的內部限制，而事後需要修改，這種情況並不少見。" },
+    item_1_3: { en: "The organization provides research tools or dedicated resources that teams use to analyze counterparties before discussions begin.", tc: "公司提供研究工具或專責資源，供團隊在開始進行商務磋商前分析對手。" },
+    item_2_3: { en: "The organization invests in understanding what counterparties value before teams engage with them directly.", tc: "公司在團隊直接接觸對手之前，投入資源去了解對手視什麼為之重要。" },
+    item_3_3: { en: "The organization's walk-away thresholds are enforced even when a deal is at risk of failing.", tc: "即使交易面臨告吹的風險，公司仍然堅守訂好的退出底線。" },
+    item_4_3: { en: "The organization tracks concessions across deals and uses that data to inform future commercial discussions.", tc: "公司記錄所有交易的讓步情況，並利用該數據為未來的商務磋商提供參考。" },
+    item_5_3: { en: "Decision authority for commercial terms is clearly documented, so teams know what they can and cannot commit to.", tc: "商務條款的決策權限有清晰的文件記錄，團隊清楚知道自己可以和不可以承諾的範圍。" },
+    item_1_4: { en: "Teams rehearse or role-play significant commercial discussions before they take place.", tc: "團隊在進行重要的商務磋商之前進行綵排或角色扮演。" },
+    item_2_4: { en: "When evaluating a proposed deal, leadership asks what the other party gains, not just what we get.", tc: "在評估擬議的交易時， 管理層會問對方會獲得了什麼， 而非只關注我方利益。" },
+    item_3_4: { en: "External deadlines set by the other party do not automatically override the organization's internal review process.", tc: "對方設定的外部期限不會自動凌駕公司的內部審核流程。" },
+    item_4_4: { en: "Post-deal reviews examine what was conceded, whether reciprocity was achieved, and what could be recovered next time.", tc: "交易後檢討會審視作出了什麼讓步、是否實現了互惠，以及下次可以收回什麼利益。" },
+    item_5_4: { en: "During extended discussions, there are required checkpoints where the team must reconfirm internal support for its direction.", tc: "在長時間的商務磋商過程中，設有規定的檢查點，要求團隊重新確認內部對其方向的支持。" },
+    item_1_7: { en: "Most preparation happens informally through conversations and experience rather than through documented analysis.", tc: "大部分準備工作通過非正式的對話進行，及依賴已累積的經驗，而非通過詳細的書面分析。" },
+    item_2_7: { en: "The default approach to contested terms is to split the difference rather than explore alternatives.", tc: "對於爭議條款，慣常做法是折中妥協，而非探索替代方案。" },
+    item_3_7: { en: "Quarterly or annual targets lead teams to accept terms they would reject if the timing pressure were not there.", tc: "季度或年度目標令團隊接受在沒有時間壓力下本會拒絕的條款。" },
+    item_4_7: { en: "Concessions are often made to maintain relationships or momentum without requiring anything specific in return.", tc: "為了維繫關係或保持進展，往往會做出讓步，卻不要求對方給予任何具體的回報。" },
+    item_5_7: { en: "Internal alignment on deal terms typically happens after the commercial team has already made commitments externally.", tc: "通常，在商業團隊向外部做出承諾之後，才會就交易條款進行內部協商。" },
+    h01: { en: "The organization's systems allow pressure to produce concessions that no one tracks or recovers.", tc: "公司的運作機制允許因為對方施壓而做出讓步，而這些讓步既無人追蹤或紀錄，也無人追回。" },
+    h02: { en: "Heavy preparation processes combined with institutional resistance to pressure may be creating rigidity that costs deal velocity.", tc: "繁複的準備流程，加上公司對外來壓力的抗拒，可能正導致運作僵化，進而拖慢交易速度。" },
+    h03: { en: "The organization invests in creating value but lacks the concession governance to protect what gets created.", tc: "公司致力於創造價值，卻缺乏保護所創造的價值的讓步管控機制。" },
+    h04: { en: "Without structured preparation or institutional backing against pressure, teams are left to negotiate from instinct and concede from urgency.", tc: "在缺乏結構化的準備或公司對抵抗外來壓力的支持下，團隊只能憑直覺談判，並因時間緊迫而讓步。" },
+    h05: { en: "Organizational resistance to pressure and tight concession control protect value but may be creating friction that counterparties route around.", tc: "公司對壓力的抗拒和嚴格的讓步管控雖能保障價值，但可能造成摩擦， 導致交易對手設法繞過負責磋商的人員。" },
+    h06: { en: "The organization rewards capturing value and backs teams who hold firm, which protects margin but may close off opportunities that require flexibility.", tc: "公司獎勵爭取價值並支持堅守立場的團隊，這保護了利潤，但有可能錯過靈活處理帶來的機會。" },
+    h07: { en: "The organization encourages value creation but does not back teams when counterparties push back, which means created value gets conceded away.", tc: "公司鼓勵創造價值，卻在對手施壓時未能支持團隊，這意味着所創造的價值會被讓步送出。" },
+    h08: { en: "Teams commit terms before internal alignment is secured, creating agreements that face rework or failure during implementation.", tc: "團隊在取得內部一致之前便承諾條款，有機會於執行時導致額外的工作量，甚至執行失敗。" },
+    h09: { en: "Heavy internal alignment requirements combined with a value-claiming orientation may make the organization appear slow, cautious, and difficult to do business with.", tc: "繁重的內部協調要求加上偏向爭取價值的取向，可能令公司顯得行動緩慢、過於謹慎且難以合作。" },
+    h10: { en: "The organization's value-creation culture would produce stronger outcomes with more structured preparation infrastructure.", tc: "公司的價值創造文化若配合更完善的結構化準備機制，將能產生更強的成果。" },
+    h11: { en: "The organization invests in preparation but its systems do not hold when counterparties apply pressure, undoing the preparation's value.", tc: "公司致力於磋商的準備工作，但當對手施加壓力時，未能堅守其制度，浪費了準備工作帶來的價值。" },
+    h12: { en: "No single dimension dominates the organizational profile. This can reflect genuine flexibility or inconsistent application across teams and deal types.", tc: "沒有單一維度主導組織檔案。這可能反映真正的靈活性，也可能反映各團隊和交易類型之間的不一致。" },
+    balancedBlock: { en: "No single dimension dominates the organizational profile. That can mean the organization's systems are flexible by design, adapting to different commercial contexts. Or it can mean the systems are inconsistently applied, with different teams, regions, or deal types operating under different norms. The question worth investigating: does the organization choose when to flex, or do different parts simply do different things?", tc: "沒有單一維度主導組織檔案。這可能意味着公司的制度在設計上具有靈活性，能適應不同的商務情境。也可能意味着制度的應用不一致，不同團隊、地區或交易類型各自遵循不同的規範。\n\n值得探究的問題是：是公司選擇何時可以放寬制度，還是不同部門各行其是？" },
+    d1Low: { en: "The organization relies on individual experience and judgment rather than structured preparation processes. Teams enter commercial discussions without standardized research, briefings, or documented analysis of counterparty positions. This gives teams speed and autonomy, but it means the quality of preparation depends entirely on who is in the room. Institutional knowledge about counterparties, precedents, and market conditions lives in people's heads rather than in accessible systems.", tc: "公司依賴個人經驗與判斷，而非結構化的準備流程。團隊在展開商業談判前，並未進行標準化的研究、簡報，或對交易對手的立場的書面分析。這雖賦予團隊速度與自主權，但也意味著準備工作的品質完全取決於現場參與人員的素質。關於公司對交易對手、先例，以及市場狀況的知識，存於個別人員的腦中，而非可存取的公司系統之中。" },
+    d1Moderate: { en: "The organization has some preparation infrastructure but its application is inconsistent. Formal processes may exist for some categories of discussion but not others, or they exist on paper but are not consistently enforced. Whether teams prepare thoroughly depends on the individual, the deal size, or how much time is available.", tc: "公司雖具備某些準備商務的基礎設施，但實際運用卻不一致。某些類別的討論可能設有正式流程，而其他類別則沒有；或者流程雖已制定，卻未能貫徹執行。團隊是否能做好充分準備，取決於個人、交易規模或可用的時間長短。" },
+    d1High: { en: "The organization invests heavily in structured preparation: standardized processes, pre-discussion briefings, research resources, and documented analysis. This creates a consistent foundation, but it may also slow teams down, create process overhead that does not scale to every discussion, and reduce the ability to respond when situations develop faster than the preparation cycle allows.", tc: "公司在結構化的準備工作上投入大量資源：包括標準化流程、討論前的簡報、研究資源以及書面分析報告。這雖奠定了穩固的基礎，但也可能拖慢團隊的進度，產生無法因應每場討論而擴展的流程負擔，並削弱團隊在形勢發展速度超過準備週期所能應對時，迅速應變的能力。" },
+    d2Low: { en: "The organization's systems reward capturing value: success is measured by what the organization gets, not by what both parties gain. Deal reviews, incentives, and leadership questions focus on margin, price, and concessions won. This protects the organization's share but may systematically close off creative outcomes and train counterparties to respond with equally zero-sum tactics.", tc: "公司的運作體系獎勵價值的攫取：成功的衡量標準在於公司獲得了什麼，而非雙方共同獲得了什麼。\n\n交易審查、激勵措施以及領導層的提問，皆聚焦於利潤率、價格以及爭取到的讓步。此舉雖能保障組織的利益，卻可能系統性地扼殺創新的成果，並促使交易對手以同樣的零和策略來應對。" },
+    d2Moderate: { en: "The organization shows a working mix of value-creating and value-claiming signals. There is some encouragement to explore creative structures, but the dominant metrics still lean toward capture. The question worth asking: does this balance hold when quarterly targets are at risk or when competitive pressure increases?", tc: "該組織展現出價值創造與價值索取訊號的實用性結合。雖然在某種程度上鼓勵探索創新的方案，但主要的衡量指標仍傾向於價值攫取。\n值得探討的問題是：當季度目標面臨風險或競爭壓力加劇時，這種平衡能否維持？" },
+    d2High: { en: "The organization actively encourages value creation: deal reviews examine mutual gain, teams are given room to propose creative structures, and leadership asks what the counterparty got out of it. This unlocks outcomes that pure claiming cannot reach, but it may leave teams exposed to counterparties focused on extraction, particularly without strong concession governance to protect the value that gets created.", tc: "公司積極鼓勵創造價值：交易審查著重評估互利性，團隊有充分空間提出創新的交易結構，而領導層也會詢問交易對手從中獲得了什麼。這能創造出單純索取所無法達成的成果，但若缺乏強有力的讓步管控機制來保護所創造的價值，團隊可能在專注於榨取利益的交易對手的面前會處於弱勢。" },
+    d3Low: { en: "When external pressure hits, the organizational response is to concede. Leadership overrides teams to close deals, quarterly targets produce concessions that would be rejected under calmer conditions, and competitive threats trigger automatic offer improvements. Teams learn that holding firm produces internal friction, so they stop trying. Counterparties learn that applying pressure produces movement, so they keep doing it.", tc: "當受到外部壓力時，公司的反應往往是讓步。領導層會越過團隊直接拍板成交；季度目標迫使團隊做出在平穩環境下本會拒絕的讓步；而競爭威脅則會觸發自動性的報價改善。團隊逐漸意識到堅持立場會引發內部摩擦，於是便不再嘗試。\n而交易對手則發現施加壓力能促使對方讓步，因此持續這樣做。" },
+    d3Moderate: { en: "The organization generally backs teams that push back against external pressure, but this backing has limits. When deals are large enough, timelines tight enough, or leadership attention focused enough, the pressure response shifts. Teams may not know where the organization's backing ends until they test it.", tc: "公司通常會支持那些能抵禦外部壓力的團隊，但這種支持是有其界限的。當交易規模足夠大、時程表足夠緊迫，或是高層的關注度足夠高時，公司對壓力的反應就會產生變化。團隊可能要到實戰時，才會測試到公司的支持的界限。" },
+    d3High: { en: "The organization backs pressure resistance: leadership supports teams that hold firm, escalation protocols prevent end-runs, and walk-away thresholds are enforced. This prevents pressure-driven concessions, but it can also create organizational rigidity. Deals that could have been saved with calibrated flexibility get lost, and counterparties may escalate or disengage because the organization is experienced as immovable.", tc: "公司支持抗壓：領導層支持立場堅定的團隊，升級處理的流程可防止繞過正規管道，且嚴格執行撤離門檻。此舉雖能避免因壓力而做出讓步，但也可能導致組織運作僵化。原本可透過適度靈活應對而挽救的交易因此告吹，而交易對手方可能會因認為該組織態度強硬而將爭端升級或選擇退出。" },
+    d4Low: { en: "Concessions are made without systematic tracking, reciprocity requirements, or organizational memory. Individual team members can give ground without approval, and deal reviews do not examine what was conceded versus what was received. This creates speed and flexibility, but it means the organization has no visibility into what it is giving away across its deal portfolio and no mechanism to learn from concession patterns.", tc: "讓步在缺乏系統性追蹤、互惠要求或公司記錄進行。個別團隊成員可在未經批准的情況下做出讓步，而交易檢討也不會檢視讓步內容與所獲回報之間的對比。這雖能帶來速度與靈活性，但意味著公司無法掌握其交易組合中整體的讓步狀況，也缺乏從讓步模式中汲取經驗的機制。" },
+    d4Moderate: { en: "The organization has some concession governance: pre-defined boundaries for major discussions, some expectation of reciprocity, and occasional post-deal review. But the discipline is inconsistent. It holds for flagship deals and breaks down for smaller or more time-pressured ones.", tc: "公司在讓步管理方面有若干規範：針對重大討論設有預定界限、對互惠有所期待，以及偶爾進行交易後檢討。但執行紀律並不一致。這套機制在旗艦級交易中尚能維持，但在規模較小或時間更緊迫的交易中則往往失效。" },
+    d4High: { en: "The organization manages concessions tightly: defined boundaries, approval requirements, cross-deal tracking, and post-deal reviews that examine reciprocity. This protects value, but it can also create friction, slow negotiations, and make teams risk-averse about offering concessions that might unlock more value than they cost.", tc: "公司對讓步措施實施嚴格管控：包括界定明確的範圍、審批要求、跨交易追蹤，以及審查互惠性的交易後評估。此舉雖能保障價值，但也可能引發摩擦、拖慢談判進度，並使團隊在提出讓步時趨於保守，即使這些讓步所創造的價值可能遠高於其成本。" },
+    d5Low: { en: "Commercial teams operate with significant autonomy and bring internal stakeholders in late or not at all. This allows fast deal-making but produces agreements that encounter internal resistance during implementation. Terms get committed that legal, finance, or operations cannot support, and the rework costs more than the speed saved.", tc: "業務團隊在運作上享有相當大的自主權，往往在較晚階段才讓內部持份者參與，甚至完全不讓其參與。這種做法雖能加速交易進程，卻會導致協議在執行階段遭遇內部阻力。由於承諾的條款往往超出法規、財務或營運部門所能支持的範圍，重新調整的成本反而高於因加快速度所節省的時間。" },
+    d5Moderate: { en: "The organization has some internal alignment processes, but they do not cover all situations. Cross-functional involvement happens for major deals but not for mid-tier ones, and there is no systematic mechanism to ensure decision authority is clear before commitments are made.", tc: "公司雖設有若干內部協調的流程，但並未涵蓋所有情況。跨部門協作僅在重大交易發生，中型交易則不在此列；此外，在做出承諾之前，亦缺乏系統性的機制來確保決策權限清晰明確。" },
+    d5High: { en: "The organization requires extensive internal alignment before teams can commit terms externally. Sign-off processes, cross-functional reviews, and documented decision authority create implementation safety, but they also slow teams down, frustrate counterparties who need faster responses, and can become a way for internal stakeholders to avoid the discomfort of external confrontation by hiding behind process.", tc: "公司要求團隊在對外承諾條款之前，必須先進行廣泛的內部協調。簽核流程、跨部門審核以及明文規定的決策權限，雖能確保實施過程的安全性，但也拖慢了團隊的進度，令需要更快回應的交易對手感到沮喪，甚至可能成為內部持份者以流程作為掩護，迴避與對方對峙所帶來的不適感的一種手段。" }
+  };
+
+  function S(key) {
+    var entry = STRINGS[key];
+    if (!entry) return '';
+    return (entry[lang] != null ? entry[lang] : entry.en) || '';
+  }
+
+  // ---- DATA (35-item full bank) ----
+
+  var ITEMS = [
+    { id: "1.1", dim: "D1", key: "item_1_1" },
+    { id: "2.1", dim: "D2", key: "item_2_1" },
+    { id: "3.1", dim: "D3", key: "item_3_1" },
+    { id: "4.1", dim: "D4", key: "item_4_1" },
+    { id: "5.1", dim: "D5", key: "item_5_1" },
+    { id: "1.5", dim: "D1", key: "item_1_5" },
+    { id: "2.5", dim: "D2", key: "item_2_5" },
+    { id: "3.5", dim: "D3", key: "item_3_5" },
+    { id: "4.5", dim: "D4", key: "item_4_5" },
+    { id: "5.5", dim: "D5", key: "item_5_5" },
+    { id: "1.2", dim: "D1", key: "item_1_2" },
+    { id: "2.2", dim: "D2", key: "item_2_2" },
+    { id: "3.2", dim: "D3", key: "item_3_2" },
+    { id: "4.2", dim: "D4", key: "item_4_2" },
+    { id: "5.2", dim: "D5", key: "item_5_2" },
+    { id: "1.6", dim: "D1", key: "item_1_6" },
+    { id: "2.6", dim: "D2", key: "item_2_6" },
+    { id: "3.6", dim: "D3", key: "item_3_6" },
+    { id: "4.6", dim: "D4", key: "item_4_6" },
+    { id: "5.6", dim: "D5", key: "item_5_6" },
+    { id: "1.3", dim: "D1", key: "item_1_3" },
+    { id: "2.3", dim: "D2", key: "item_2_3" },
+    { id: "3.3", dim: "D3", key: "item_3_3" },
+    { id: "4.3", dim: "D4", key: "item_4_3" },
+    { id: "5.3", dim: "D5", key: "item_5_3" },
+    { id: "1.4", dim: "D1", key: "item_1_4" },
+    { id: "2.4", dim: "D2", key: "item_2_4" },
+    { id: "3.4", dim: "D3", key: "item_3_4" },
+    { id: "4.4", dim: "D4", key: "item_4_4" },
+    { id: "5.4", dim: "D5", key: "item_5_4" },
+    { id: "1.7", dim: "D1", key: "item_1_7" },
+    { id: "2.7", dim: "D2", key: "item_2_7" },
+    { id: "3.7", dim: "D3", key: "item_3_7" },
+    { id: "4.7", dim: "D4", key: "item_4_7" },
+    { id: "5.7", dim: "D5", key: "item_5_7" }
+  ];
+
+  var DIMENSIONS = {
+    D1: { id: 'D1', nameKey: 'd1Name', leftKey: 'd1Left', rightKey: 'd1Right', items: ['1.1', '1.2', '1.3', '1.4', '1.5', '1.6', '1.7'] },
+    D2: { id: 'D2', nameKey: 'd2Name', leftKey: 'd2Left', rightKey: 'd2Right', items: ['2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7'] },
+    D3: { id: 'D3', nameKey: 'd3Name', leftKey: 'd3Left', rightKey: 'd3Right', items: ['3.1', '3.2', '3.3', '3.4', '3.5', '3.6', '3.7'] },
+    D4: { id: 'D4', nameKey: 'd4Name', leftKey: 'd4Left', rightKey: 'd4Right', items: ['4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7'] },
+    D5: { id: 'D5', nameKey: 'd5Name', leftKey: 'd5Left', rightKey: 'd5Right', items: ['5.1', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7'] }
+  };
+
+  var REVERSE_ITEMS = ['1.5', '2.5', '3.5', '4.5', '5.5', '1.6', '2.6', '3.6', '4.6', '5.6', '1.7', '2.7', '3.7', '4.7', '5.7'];
+
+  var HEADLINES = {
+    H01: 'h01',
+    H02: 'h02',
+    H03: 'h03',
+    H04: 'h04',
+    H05: 'h05',
+    H06: 'h06',
+    H07: 'h07',
+    H08: 'h08',
+    H09: 'h09',
+    H10: 'h10',
+    H11: 'h11',
+    H12: 'h12'
+  };
+
+  var SUMMARIES = {
+    D1: { LOW: 'd1Low', MODERATE: 'd1Moderate', HIGH: 'd1High' },
+    D2: { LOW: 'd2Low', MODERATE: 'd2Moderate', HIGH: 'd2High' },
+    D3: { LOW: 'd3Low', MODERATE: 'd3Moderate', HIGH: 'd3High' },
+    D4: { LOW: 'd4Low', MODERATE: 'd4Moderate', HIGH: 'd4High' },
+    D5: { LOW: 'd5Low', MODERATE: 'd5Moderate', HIGH: 'd5High' }
+  };
+
+  var RESPONSE_OPTIONS = [
+    { value: 1, key: 'scale1' },
+    { value: 2, key: 'scale2' },
+    { value: 3, key: 'scale3' },
+    { value: 4, key: 'scale4' }
+  ];
+
+  var DIM_ORDER = ['D1', 'D2', 'D3', 'D4', 'D5'];
+  var DIM_NAMES = { D1: 'd1Name', D2: 'd2Name', D3: 'd3Name', D4: 'd4Name', D5: 'd5Name' };
+
+  // ---- STATE ----
+
+  var currentQ = 0;
+  var responses = {};
+  var scores = {};
+  var bands = {};
+  var selectedHeadline = '';
+  var hasSubmitted = false;
+  var transitioning = false;
+
+  // ---- DOM REFS ----
+
+  var elProgressBar = document.getElementById('progressBar');
+  var elProgressNum = document.getElementById('progressNum');
+  var elProgressDimLabel = document.getElementById('progressDimLabel');
+  var elPips = document.getElementById('pipsContainer');
+  var elNoToken = document.getElementById('no-token');
+  var elIntro = document.getElementById('intro');
+  var elQuestions = document.getElementById('questions');
+  var elLoading = document.getElementById('loading');
+  var elResults = document.getElementById('results');
+  var elQWrap = document.getElementById('qWrap');
+  var elQText = document.getElementById('qText');
+  var elQOptions = document.getElementById('qOptions');
+  var elBtnStart = document.getElementById('btnStart');
+  var elBtnBack = document.getElementById('btnBack');
+  var elResultsToolLabel = document.getElementById('resultsToolLabel');
+  var elResultsHeadline = document.getElementById('resultsHeadline');
+  var elChartSection = document.getElementById('chartSection');
+  var elBalancedBlock = document.getElementById('balancedBlock');
+  var elSummariesSection = document.getElementById('summariesSection');
+  var elBtnRetake = document.getElementById('btnRetake');
+
+  // Initialize language UI before any early returns.
+  applyStaticLang();
+  bindLangToggle();
+
+  // ---- TOKEN CHECK ----
+
+  if (!token) {
+    elNoToken.classList.add('active');
+    // Do not proceed with any other initialization
+    return;
+  }
+
+  // Show intro if token is valid
+  elIntro.classList.add('active');
+
+  // ---- PIPS ----
+
+  function buildPips() {
+    elPips.innerHTML = '';
+    for (var i = 0; i < 35; i++) {
+      var pip = document.createElement('span');
+      pip.className = 'pip';
+      // Gap every 5 pips (items interleaved: 5 dims x 7 rounds = groups of 5)
+      if (i > 0 && i % 5 === 0) pip.classList.add('dim-gap');
+      pip.setAttribute('data-pip', i);
+      elPips.appendChild(pip);
+    }
+  }
+
+  function updatePips() {
+    var pips = elPips.querySelectorAll('.pip');
+    for (var i = 0; i < pips.length; i++) {
+      pips[i].classList.remove('done', 'active');
+      if (i < currentQ) pips[i].classList.add('done');
+      if (i === currentQ) pips[i].classList.add('active');
+    }
+  }
+
+  // ---- PROGRESS ----
+
+  function updateProgress() {
+    var item = ITEMS[currentQ];
+    var dim = DIMENSIONS[item.dim];
+    elProgressNum.innerHTML = (currentQ + 1) + ' <span class="total">/35</span>';
+    elProgressDimLabel.textContent = S(dim.nameKey);
+    updatePips();
+  }
+
+  // ---- SECTIONS ----
+
+  function showSection(id) {
+    var sections = [elIntro, elQuestions, elLoading, elResults];
+    for (var i = 0; i < sections.length; i++) {
+      sections[i].classList.remove('active');
+    }
+    document.getElementById(id).classList.add('active');
+    elProgressBar.classList.toggle('visible', id === 'questions');
+    window.scrollTo(0, 0);
+  }
+
+  // ---- QUESTIONS ----
+
+    function lockQuestionHeight() {
+    var savedQ = currentQ;
+    var maxTextH = 0;
+
+    for (var i = 0; i < ITEMS.length; i++) {
+      elQText.textContent = S(ITEMS[i].key);
+      var h = elQText.offsetHeight;
+      if (h > maxTextH) maxTextH = h;
+    }
+
+    elQText.style.minHeight = maxTextH + 'px';
+
+    elQText.textContent = S(ITEMS[savedQ].key);
+  }
+
+  function renderOptions(selectedVal) {
+    elQOptions.innerHTML = '';
+    for (var i = 0; i < RESPONSE_OPTIONS.length; i++) {
+      var opt = RESPONSE_OPTIONS[i];
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'q-btn';
+      btn.setAttribute('role', 'radio');
+      btn.setAttribute('aria-checked', selectedVal === opt.value ? 'true' : 'false');
+      if (selectedVal === opt.value) btn.classList.add('selected');
+      btn.innerHTML = '<span class="q-btn-num">' + opt.value + '</span><span class="q-btn-label">' + S(opt.key) + '</span>';
+      btn.setAttribute('data-value', opt.value);
+      btn.addEventListener('click', handleAnswer);
+      elQOptions.appendChild(btn);
+    }
+  }
+
+  function showQuestion() {
+    var item = ITEMS[currentQ];
+    elQText.textContent = S(item.key);
+    var existing = responses[item.id] || -1;
+    renderOptions(existing);
+    updateProgress();
+
+    elBtnBack.classList.toggle('hidden', currentQ === 0);
+
+    elQWrap.classList.remove('fade-in');
+    void elQWrap.offsetWidth;
+    elQWrap.classList.add('fade-in');
+  }
+
+  function handleAnswer(e) {
+    if (transitioning) return;
+    var btn = e.currentTarget;
+    var val = parseInt(btn.getAttribute('data-value'), 10);
+    var item = ITEMS[currentQ];
+    responses[item.id] = val;
+
+    var btns = elQOptions.querySelectorAll('.q-btn');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].classList.remove('selected');
+      btns[i].setAttribute('aria-checked', 'false');
+    }
+    btn.classList.add('selected');
+    btn.setAttribute('aria-checked', 'true');
+
+    transitioning = true;
+    setTimeout(function() {
+      transitioning = false;
+      if (currentQ < ITEMS.length - 1) {
+        currentQ++;
+        showQuestion();
+      } else {
+        showSection('loading');
+        setTimeout(function() {
+          calculateScores();
+          submitResults();
+          renderResults();
+          showSection('results');
+        }, 1500);
+      }
+    }, 300);
+  }
+
+  // ---- SCORING ----
+
+  function calculateScores() {
+    scores = {};
+    bands = {};
+    for (var i = 0; i < DIM_ORDER.length; i++) {
+      var dimId = DIM_ORDER[i];
+      var dim = DIMENSIONS[dimId];
+      var total = 0;
+      for (var j = 0; j < dim.items.length; j++) {
+        var itemId = dim.items[j];
+        var raw = responses[itemId] || 0;
+        if (REVERSE_ITEMS.indexOf(itemId) !== -1) {
+          raw = 5 - raw;
+        }
+        total += raw;
+      }
+      scores[dimId] = total;
+      // 7-item range: 7-28. LOW 7-14, MODERATE 15-20, HIGH 21-28
+      if (total <= 14) bands[dimId] = 'LOW';
+      else if (total >= 21) bands[dimId] = 'HIGH';
+      else bands[dimId] = 'MODERATE';
+    }
+  }
+
+  function selectHeadline(scoresObj, bandsObj) {
+    var d1 = scoresObj.D1, d2 = scoresObj.D2, d3 = scoresObj.D3, d4 = scoresObj.D4, d5 = scoresObj.D5;
+
+    // Threshold scaled for 7-item range (was 3.0 for 3-item, now 7.0)
+    if (Math.abs(d1 - d3) >= 7.0 && d1 > d3) return 'H11';
+
+    if (bandsObj.D3 === 'LOW' && bandsObj.D4 === 'LOW') return 'H01';
+    if (bandsObj.D1 === 'HIGH' && bandsObj.D3 === 'HIGH') return 'H02';
+    if (bandsObj.D2 === 'HIGH' && bandsObj.D4 === 'LOW') return 'H03';
+    if (bandsObj.D1 === 'LOW' && bandsObj.D3 === 'LOW') return 'H04';
+    if (bandsObj.D3 === 'HIGH' && bandsObj.D4 === 'HIGH') return 'H05';
+    if (bandsObj.D2 === 'LOW' && bandsObj.D3 === 'HIGH') return 'H06';
+    if (bandsObj.D2 === 'HIGH' && bandsObj.D3 === 'LOW') return 'H07';
+    if (bandsObj.D5 === 'LOW') return 'H08';
+    if (bandsObj.D5 === 'HIGH' && bandsObj.D2 === 'LOW') return 'H09';
+    if (bandsObj.D1 === 'LOW' && bandsObj.D2 === 'HIGH') return 'H10';
+
+    var deviations = [];
+    var dims = ['D1','D2','D3','D4','D5'];
+    for (var i = 0; i < dims.length; i++) {
+      var dev = scoresObj[dims[i]] - 17.5;
+      deviations.push({ dim: dims[i], dev: dev, absDev: Math.abs(dev) });
+    }
+    deviations.sort(function(a, b) { return b.absDev - a.absDev; });
+
+    var top = deviations[0];
+    // Threshold scaled for 7-item range (was 1.0 for 3-item)
+    if (top.absDev >= 2.5) {
+      if (top.dim === 'D3' && top.dev < 0) return 'H01';
+      if (top.dim === 'D3' && top.dev > 0) return 'H05';
+      if (top.dim === 'D4' && top.dev < 0) return 'H01';
+      if (top.dim === 'D4' && top.dev > 0) return 'H05';
+      if (top.dim === 'D1' && top.dev < 0) return 'H04';
+      if (top.dim === 'D1' && top.dev > 0) return 'H02';
+      if (top.dim === 'D2' && top.dev < 0) return 'H06';
+      if (top.dim === 'D2' && top.dev > 0) return 'H07';
+      if (top.dim === 'D5' && top.dev < 0) return 'H08';
+      if (top.dim === 'D5' && top.dev > 0) return 'H09';
+    }
+
+    return 'H12';
+  }
+
+  // ---- SUBMISSION ----
+
+  function submitResults() {
+    if (hasSubmitted) return;
+    hasSubmitted = true;
+
+    var ITEM_ORDER = [
+      '1.1','1.2','1.3','1.4','1.5','1.6','1.7',
+      '2.1','2.2','2.3','2.4','2.5','2.6','2.7',
+      '3.1','3.2','3.3','3.4','3.5','3.6','3.7',
+      '4.1','4.2','4.3','4.4','4.5','4.6','4.7',
+      '5.1','5.2','5.3','5.4','5.5','5.6','5.7'
+    ];
+
+    var payload = {
+      token: token,
+      timestamp: new Date().toISOString(),
+      responses: {},
+      scores: {},
+      headline: selectedHeadline
+    };
+
+    for (var i = 0; i < ITEM_ORDER.length; i++) {
+      payload.responses[ITEM_ORDER[i]] = responses[ITEM_ORDER[i]];
+    }
+
+    for (var j = 0; j < DIM_ORDER.length; j++) {
+      var dimId = DIM_ORDER[j];
+      var raw = scores[dimId];
+      // Percentage: raw range is 7-28, mapped to 0-100
+      var pct = parseFloat((((raw - 7) / 21) * 100).toFixed(2));
+      payload.scores[dimId] = {
+        raw: raw,
+        pct: pct
+      };
+    }
+    payload.headline = selectHeadline(scores, bands);
+    fetch(WEBHOOK_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    }).catch(function(err) {
+      console.error('Submission error:', err);
+    });
+  }
+
+  // ---- RESULTS ----
+
+  function renderResults() {
+    selectedHeadline = selectHeadline(scores, bands);
+    elResultsToolLabel.textContent = getToolName();
+    elResultsHeadline.textContent = S(HEADLINES[selectedHeadline]);
+
+    // Balanced block
+    elBalancedBlock.classList.toggle('visible', selectedHeadline === 'H12');
+
+    // Chart
+    renderChart();
+
+    // Summaries - show immediately, no gate
+    renderSummaries();
+    elSummariesSection.classList.add('visible');
+
+    // Stagger reveal summary cards
+    var cards = elSummariesSection.querySelectorAll('.summary-card');
+    for (var i = 0; i < cards.length; i++) {
+      (function(card, delay) {
+        setTimeout(function() {
+          card.classList.add('revealed');
+        }, delay);
+      })(cards[i], i * 50);
+    }
+  }
+
+  function renderChart() {
+    elChartSection.innerHTML = '';
+    for (var i = 0; i < DIM_ORDER.length; i++) {
+      var dimId = DIM_ORDER[i];
+      var dim = DIMENSIONS[dimId];
+      var score = scores[dimId];
+      // 7-item range: 7-28, midpoint 17.5, half-range 10.5
+      var pos = (score - 17.5) / 10.5; // -1 to +1
+      var pct = (pos + 1) / 2 * 100; // 0 to 100
+      var markerPct = Math.max(1.5, Math.min(98.5, pct));
+
+      var row = document.createElement('div');
+      row.className = 'chart-row';
+
+      var nameEl = document.createElement('div');
+      nameEl.className = 'chart-dim-name';
+      nameEl.textContent = S(dim.nameKey);
+      row.appendChild(nameEl);
+
+      var barContainer = document.createElement('div');
+      barContainer.className = 'chart-bar-container';
+
+      var track = document.createElement('div');
+      track.className = 'chart-track';
+
+      var modZone = document.createElement('div');
+      modZone.className = 'chart-moderate-zone';
+      track.appendChild(modZone);
+      barContainer.appendChild(track);
+
+      var centerLine = document.createElement('div');
+      centerLine.className = 'chart-center-line';
+      barContainer.appendChild(centerLine);
+
+      var fill = document.createElement('div');
+      fill.className = 'chart-fill';
+      var intensity = Math.min(Math.abs(pos) * 1.2, 1);
+      // Floor at 0.6 so bars are visible even on moderate/center scores
+      var fillOpacity = 0.6 + 0.4 * intensity;
+      fill.style.opacity = fillOpacity;
+      fill.style.left = '50%';
+      fill.style.width = '0%';
+      barContainer.appendChild(fill);
+
+      var marker = document.createElement('div');
+      marker.className = 'chart-marker';
+      marker.style.left = '50%';
+      barContainer.appendChild(marker);
+
+      row.appendChild(barContainer);
+
+      var labels = document.createElement('div');
+      labels.className = 'chart-labels';
+      labels.innerHTML = '<span class="chart-label">' + escHtml(S(dim.leftKey)) + '</span><span class="chart-label chart-label-right">' + escHtml(S(dim.rightKey)) + '</span>';
+      row.appendChild(labels);
+
+      elChartSection.appendChild(row);
+
+      (function(fill, marker, pct, markerPct, pos) {
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+            if (pct >= 50) {
+              fill.style.left = '50%';
+              fill.style.width = (pct - 50) + '%';
+            } else {
+              fill.style.left = pct + '%';
+              fill.style.width = (50 - pct) + '%';
+            }
+            marker.style.left = markerPct + '%';
+          });
+        });
+      })(fill, marker, pct, markerPct, pos);
+    }
+  }
+
+  // ---- SUMMARIES ----
+
+  function renderSummaries() {
+    elSummariesSection.innerHTML = '';
+    for (var i = 0; i < DIM_ORDER.length; i++) {
+      var dimId = DIM_ORDER[i];
+      var dim = DIMENSIONS[dimId];
+      var band = bands[dimId];
+
+      var card = document.createElement('div');
+      card.className = 'summary-card';
+
+      var header = document.createElement('div');
+      header.className = 'summary-header';
+      header.setAttribute('tabindex', '0');
+      header.setAttribute('role', 'button');
+      header.setAttribute('aria-expanded', 'false');
+
+      var left = document.createElement('div');
+      left.className = 'summary-header-left';
+
+      var dimName = document.createElement('div');
+      dimName.className = 'summary-dim-name';
+      dimName.textContent = S(dim.nameKey);
+      left.appendChild(dimName);
+
+      var bandLabel = document.createElement('div');
+      bandLabel.className = 'summary-band-label band-' + band.toLowerCase();
+      if (band === 'LOW') {
+        bandLabel.textContent = S('bandLow') + ' (' + S(dim.leftKey) + ')';
+      } else if (band === 'HIGH') {
+        bandLabel.textContent = S('bandHigh') + ' (' + S(dim.rightKey) + ')';
+      } else {
+        bandLabel.textContent = S('bandModerate');
+      }
+      left.appendChild(bandLabel);
+
+      var chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      chevron.setAttribute('class', 'summary-chevron');
+      chevron.setAttribute('viewBox', '0 0 24 24');
+      chevron.setAttribute('fill', 'none');
+      chevron.setAttribute('stroke', 'currentColor');
+      chevron.setAttribute('stroke-width', '2');
+      chevron.setAttribute('stroke-linecap', 'round');
+      chevron.setAttribute('stroke-linejoin', 'round');
+      var path = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+      path.setAttribute('points', '6 9 12 15 18 9');
+      chevron.appendChild(path);
+
+      header.appendChild(left);
+      header.appendChild(chevron);
+
+      var body = document.createElement('div');
+      body.className = 'summary-body';
+      var copyEl = document.createElement('p');
+      copyEl.className = 'summary-copy';
+      copyEl.textContent = S(SUMMARIES[dimId][band]);
+      body.appendChild(copyEl);
+
+      card.appendChild(header);
+      card.appendChild(body);
+
+      (function(card, header) {
+        header.addEventListener('click', function() {
+          var isExpanded = card.classList.contains('expanded');
+          card.classList.toggle('expanded');
+          header.setAttribute('aria-expanded', !isExpanded ? 'true' : 'false');
+        });
+        header.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            header.click();
+          }
+        });
+      })(card, header);
+
+      elSummariesSection.appendChild(card);
+    }
+  }
+
+  // ---- SAVE PROFILE ----
+
+  document.getElementById('btnSave').addEventListener('click', function() {
+    window.print();
+  });
+
+  // ---- RETAKE ----
+
+  elBtnRetake.addEventListener('click', function() {
+    currentQ = 0;
+    responses = {};
+    scores = {};
+    bands = {};
+    selectedHeadline = '';
+    transitioning = false;
+    elSummariesSection.classList.remove('visible');
+    elBalancedBlock.classList.remove('visible');
+    elSummariesSection.innerHTML = '';
+    elChartSection.innerHTML = '';
+    showSection('intro');
+  });
+
+  // ---- I18N HELPERS / TOGGLE ----
+
+  function escHtml(s) {
+    if (s == null) return '';
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function applyStaticLang() {
+    var nodes = document.querySelectorAll('[data-i18n]');
+    for (var i = 0; i < nodes.length; i++) {
+      var key = nodes[i].getAttribute('data-i18n');
+      nodes[i].textContent = S(key);
+    }
+    // Special: the four scale-explanation list items use [data-i18n-html]
+    // because the canonical string contains a colon-prefixed label that we
+    // render in <strong>. Split on the first ':' (or full-width '\uff1a').
+    var htmlNodes = document.querySelectorAll('[data-i18n-html]');
+    for (var j = 0; j < htmlNodes.length; j++) {
+      var k = htmlNodes[j].getAttribute('data-i18n-html');
+      var raw = S(k);
+      var idx = raw.indexOf(':');
+      var idxFw = raw.indexOf('\uff1a');
+      var splitAt = -1, sep = '';
+      if (idx >= 0 && (idxFw < 0 || idx < idxFw)) { splitAt = idx; sep = ':'; }
+      else if (idxFw >= 0) { splitAt = idxFw; sep = '\uff1a'; }
+      if (splitAt > 0) {
+        htmlNodes[j].innerHTML = '<strong>' + escHtml(raw.slice(0, splitAt)) + sep + '</strong>' + escHtml(raw.slice(splitAt + 1));
+      } else {
+        htmlNodes[j].textContent = raw;
+      }
+    }
+    document.title = S('pageTitle');
+    document.documentElement.lang = (lang === 'tc') ? 'zh-Hant-HK' : 'en';
+    var btnEn = document.getElementById('langEn');
+    var btnTc = document.getElementById('langTc');
+    if (btnEn && btnTc) {
+      btnEn.classList.toggle('lang-active', lang === 'en');
+      btnTc.classList.toggle('lang-active', lang === 'tc');
+      btnEn.setAttribute('aria-pressed', lang === 'en' ? 'true' : 'false');
+      btnTc.setAttribute('aria-pressed', lang === 'tc' ? 'true' : 'false');
+    }
+    // Aria labels
+    var langGroup = document.querySelector('.lang-toggle');
+    if (langGroup) langGroup.setAttribute('aria-label', S('ariaLanguage'));
+    var qOpts = document.getElementById('qOptions');
+    if (qOpts) qOpts.setAttribute('aria-label', S('ariaSelectResponse'));
+    var btnBack = document.getElementById('btnBack');
+    if (btnBack) btnBack.setAttribute('aria-label', S('ariaPrevious'));
+  }
+
+  function rerenderActive() {
+    if (elQuestions.classList.contains('active')) {
+      // Re-measure question text height because the new language may be
+      // taller/shorter; then re-render the active item with current selection.
+      elQText.style.minHeight = '';
+      lockQuestionHeight();
+      showQuestion();
+    }
+    if (elResults.classList.contains('active')) {
+      // Reset stagger state so cards fade back in cleanly is not strictly
+      // necessary; just rebuild the chart and summaries with new strings.
+      renderResults();
+      var cards = elSummariesSection.querySelectorAll('.summary-card');
+      for (var i = 0; i < cards.length; i++) cards[i].classList.add('revealed');
+    }
+    if (elProgressBar.classList.contains('visible')) {
+      updateProgress();
+    }
+  }
+
+  function setLang(newLang) {
+    if (newLang !== 'en' && newLang !== 'tc') return;
+    if (newLang === lang) return;
+    lang = newLang;
+    applyStaticLang();
+    rerenderActive();
+  }
+
+  function bindLangToggle() {
+    var btnEn = document.getElementById('langEn');
+    var btnTc = document.getElementById('langTc');
+    if (btnEn) btnEn.addEventListener('click', function () { setLang('en'); });
+    if (btnTc) btnTc.addEventListener('click', function () { setLang('tc'); });
+  }
+
+  // ---- INIT ----
+
+  buildPips();
+
+  elBtnStart.addEventListener('click', function() {
+    showSection('questions');
+    showQuestion();
+    setTimeout(lockQuestionHeight, 50);
+  });
+
+  elBtnBack.addEventListener('click', function() {
+    if (currentQ > 0) {
+      currentQ--;
+      showQuestion();
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
